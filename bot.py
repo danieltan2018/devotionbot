@@ -78,7 +78,7 @@ def new():
     text = links(text)
     text = title + text
     bot.send_message(chat_id=channel, text=text,
-                     parse_mode=telegram.ParseMode.HTML)
+                     parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
 
 def main():
