@@ -1,0 +1,2 @@
+bottoken = ''
+channel = -1
