@@ -83,7 +83,7 @@ def new():
 
 def main():
     schedule.every().day.at("07:00").do(new)
-    new()
+
     while True:
         schedule.run_pending()
         time.sleep(30)
