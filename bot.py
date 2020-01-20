@@ -63,7 +63,7 @@ def new():
     parser = MyHTMLParser()
     parser.feed(summary)
     text = text.split('<>')
-    text = text[0].strip() + '\n\n' + text[1] + 'www.crossway.com.'
+    text = text[0].strip() + '\n\n<i>' + text[1] + 'www.crossway.com.</i>'
     text = title + text
     bot.send_message(chat_id=channel, text=text,
                      parse_mode=telegram.ParseMode.HTML)
