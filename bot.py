@@ -1,6 +1,7 @@
 # pip install feedparser
 import feedparser
 from html.parser import HTMLParser
+import re
 
 # pip install python-telegram-bot
 # pip install schedule
@@ -52,6 +53,16 @@ class MyHTMLParser(HTMLParser):
         text += data
 
 
+def links(text):
+    verses = re.findall(
+        '[(](?:\d\s)?[A-Z][a-z]+[.]?\s\d+[:]\d+(?:[-]\d+)?[)]', text)
+    for item in verses:
+        item = item.strip('()')
+        text = text.replace(
+            item, '<a href="https://www.biblegateway.com/passage/?search={}&version=KJV">{}</a>'.format(item, item))
+    return text
+
+
 def new():
     global text
     text = ''
@@ -64,6 +75,7 @@ def new():
     parser.feed(summary)
     text = text.split('<>')
     text = text[0].strip() + '\n\n<i>' + text[1] + 'www.crossway.com.</i>'
+    text = links(text)
     text = title + text
     bot.send_message(chat_id=channel, text=text,
                      parse_mode=telegram.ParseMode.HTML)
@@ -71,7 +83,7 @@ def new():
 
 def main():
     schedule.every().day.at("07:00").do(new)
-
+    new()
     while True:
         schedule.run_pending()
         time.sleep(30)
