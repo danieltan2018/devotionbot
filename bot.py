@@ -57,7 +57,6 @@ def links(text):
     verses = re.findall(
         '(?:\d\s)?[A-Z][a-z]+[.]?\s\d+[:]\d+(?:[-]\d+)?(?:[—]\d+[:]\d+)?(?:[,]\s\d+)?', text)
     for item in verses:
-        item = item.strip('()')
         text = text.replace(
             item, '<a href="https://www.biblegateway.com/passage/?search={}&version=KJV">{}</a>'.format(item, item))
     return text
