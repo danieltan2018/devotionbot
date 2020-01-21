@@ -55,7 +55,7 @@ class MyHTMLParser(HTMLParser):
 
 def links(text):
     verses = re.findall(
-        '[(](?:\d\s)?[A-Z][a-z]+[.]?\s\d+[:]\d+(?:[-]\d+)?[)]', text)
+        '(?:\d\s)?[A-Z][a-z]+[.]?\s\d+[:]\d+(?:[-]\d+)?(?:[—]\d+[:]\d+)?', text)
     for item in verses:
         item = item.strip('()')
         text = text.replace(
