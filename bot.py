@@ -9,7 +9,7 @@ import telegram
 import logging
 import schedule
 import time
-from params import bottoken, channel
+from params import bottoken
 bot = telegram.Bot(token=bottoken)
 
 logging.basicConfig(
@@ -62,10 +62,10 @@ def links(text):
     return text
 
 
-def new():
+def send(feedurl, channel):
     global text
     text = ''
-    feed = feedparser.parse("http://feeds.gty.org/gtystrengthfortoday&x=1")
+    feed = feedparser.parse(feedurl)
     entry = feed.entries[0]
     title = entry.title
     title = '<b><u>{}</u></b>\n\n'.format(title)
@@ -80,8 +80,27 @@ def new():
                      parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
 
+def command():
+    feed1 = 'http://feeds.gty.org/gtystrengthfortoday&x=1'
+    channel1 = '@strengthfortoday'
+
+    feed2 = 'http://feeds.gty.org/gtydrawingnear&x=1'
+    channel2 = '@drawingnear'
+
+    try:
+        send(feed1, channel1)
+    except:
+        pass
+
+    try:
+        send(feed2, channel2)
+    except:
+        pass
+
+
 def main():
-    schedule.every().day.at("06:00").do(new)
+
+    schedule.every().day.at("06:00").do(command)
 
     while True:
         schedule.run_pending()
