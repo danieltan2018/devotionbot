@@ -91,12 +91,14 @@ def command():
     try:
         send(feed1, channel1)
     except:
-        pass
+        bot.send_message(chat_id=channel1, text='_We are facing technical difficulties and are unable to send this message_',
+                         parse_mode=telegram.ParseMode.MARKDOWN, disable_notification=True)
 
     try:
         send(feed2, channel2)
     except:
-        pass
+        bot.send_message(chat_id=channel2, text='_We are facing technical difficulties and are unable to send this message_',
+                         parse_mode=telegram.ParseMode.MARKDOWN, disable_notification=True)
 
 
 def main():
