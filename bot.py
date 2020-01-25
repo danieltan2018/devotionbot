@@ -55,7 +55,8 @@ class MyHTMLParser(HTMLParser):
 
 def links(text):
     verses = re.findall(
-        '(?:\d\s)?[A-Z][a-z]+[.]?\s\d+[:]\d+(?:[-]\d+)?(?:[—]\d+[:]\d+)?(?:[,]\s\d+)?', text)
+        '(?:\d\s)?[A-Z][a-z]+[.]?\s\d+[:]\d+(?:[-]\d+)?(?:[—]\d+[:]\d+)?(?:[,]\s\d+)?(?:[;]\s\d+[:]\d+(?:[-]\d+)?)?', text)
+    verses = set(verses)
     for item in verses:
         text = text.replace(
             item, '<a href="https://www.biblegateway.com/passage/?search={}&version=KJV">{}</a>'.format(item, item))
