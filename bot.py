@@ -17,12 +17,19 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+feed1 = 'http://feeds.gty.org/gtystrengthfortoday&x=1'
+channel1 = '@strengthfortoday'
+
+feed2 = 'http://feeds.gty.org/gtydrawingnear&x=1'
+channel2 = '@drawingnear'
+
+
 class MyHTMLParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         global text
         if tag == 'p' or tag == 'br':
             tag = '\n'
-        elif tag == 'strong' or tag == 'b':
+        elif tag == 'strong' or tag == 'b' or tag.startswith('h'):
             tag = '<b>'
         elif tag == 'em' or tag == 'i':
             tag = '<i>'
@@ -36,13 +43,15 @@ class MyHTMLParser(HTMLParser):
 
     def handle_endtag(self, tag):
         global text
-        if tag == 'strong' or tag == 'b':
+        if tag == 'strong' or tag == 'b' or tag.startswith('h'):
             tag = '</b>'
         elif tag == 'em' or tag == 'i':
             tag = '</i>'
         elif tag == 'ul':
             tag = ''
         elif tag == 'li':
+            tag = ''
+        elif tag == 'p':
             tag = ''
         else:
             tag = ''
@@ -54,16 +63,21 @@ class MyHTMLParser(HTMLParser):
 
 
 def links(text):
-    verses = re.findall(
-        '(?:\d\s)?[A-Z][a-z]+[.]?\s\d+[:]\d+(?:[-]\d+)?(?:[—]\d+[:]\d+)?(?:[,]\s\d+)?(?:[;]\s\d+[:]\d+(?:[-]\d+)?)?', text)
-    verses = set(verses)
-    for item in verses:
-        text = text.replace(
-            item, '<a href="https://www.biblegateway.com/passage/?search={}&version=KJV">{}</a>'.format(item, item))
-    return text
+    text = text.split('\n')
+    newtext = []
+    for passage in text:
+        verses = re.findall(
+            '(?:\d\s)?[A-Z][a-z]+[.]?\s\d+[:]\d+(?:[-]\d+)?(?:[—]\d+[:]\d+)?(?:[,]\s\d+)?(?:[;]\s\d+[:]\d+(?:[-]\d+)?)?', passage)
+        verses = set(verses)
+        for item in verses:
+            passage = passage.replace(
+                item, '<a href="https://www.biblegateway.com/passage/?search={}&version=KJV">{}</a>'.format(item, item))
+        newtext.append(passage)
+    newtext = '\n'.join(newtext)
+    return newtext
 
 
-def send(feedurl, channel):
+def getfeed(feedurl):
     global text
     text = ''
     feed = feedparser.parse(feedurl)
@@ -77,28 +91,32 @@ def send(feedurl, channel):
     text = text[0].strip() + '\n\n<i>' + text[1] + 'www.crossway.com.</i>'
     text = links(text)
     text = title + text
+
+
+def send(channel):
     bot.send_message(chat_id=channel, text=text,
                      parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
 
 def command():
-    feed1 = 'http://feeds.gty.org/gtystrengthfortoday&x=1'
-    channel1 = '@strengthfortoday'
-
-    feed2 = 'http://feeds.gty.org/gtydrawingnear&x=1'
-    channel2 = '@drawingnear'
-
+    getfeed(feed1)
     try:
-        send(feed1, channel1)
+        send(channel1)
     except:
         bot.send_message(chat_id=channel1, text='_We are facing technical difficulties and are unable to send this message_',
                          parse_mode=telegram.ParseMode.MARKDOWN, disable_notification=True)
 
+    getfeed(feed2)
     try:
-        send(feed2, channel2)
+        send(channel2)
     except:
         bot.send_message(chat_id=channel2, text='_We are facing technical difficulties and are unable to send this message_',
                          parse_mode=telegram.ParseMode.MARKDOWN, disable_notification=True)
+
+
+def override():
+    getfeed(feed2)
+    send(channel2)
 
 
 def main():
