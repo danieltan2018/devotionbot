@@ -87,7 +87,11 @@ def getfeed(feedurl):
     summary = entry.summary
     parser = MyHTMLParser()
     parser.feed(summary)
-    text = text.split('<>')
+    splittext = text.split('<>')
+    text = []
+    for item in splittext:
+        if item.strip() != '':
+            text.append(item)
     text = text[0].strip() + '\n\n<i>' + text[1] + 'www.crossway.com.</i>'
     text = links(text)
     text = title + text
