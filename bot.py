@@ -37,8 +37,10 @@ class MyHTMLParser(HTMLParser):
             tag = ''
         elif tag == 'li':
             tag = '- '
+        elif tag == 'g':
+            tag = ''
         else:
-            tag = '<>'
+            tag = '<>'.format(tag)
         text += tag
 
     def handle_endtag(self, tag):
@@ -95,6 +97,10 @@ def getfeed(feedurl):
     text = text[0].strip() + '\n\n<i>' + text[1] + 'www.crossway.com.</i>'
     text = links(text)
     text = title + text
+    while '\n\n\n' in text:
+        text = text.replace('\n\n\n', '\n\n')
+    while '  ' in text:
+        text = text.replace('  ', ' ')
 
 
 def send(channel):
@@ -119,8 +125,9 @@ def command():
 
 
 def override():
-    getfeed(feed2)
-    send(channel2)
+    getfeed(feed1)
+    print(text)
+    send(channel1)
 
 
 def main():
