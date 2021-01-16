@@ -28,7 +28,7 @@ class MyHTMLParser(HTMLParser):
             tag = '\n'
         elif tag == 'strong' or tag == 'b' or tag.startswith('h'):
             tag = '<b>'
-        elif tag == 'em' or tag == 'i':
+        elif tag == 'em' or tag == 'i' or tag == 'blockquote':
             tag = '<i>'
         elif tag == 'ul':
             tag = ''
@@ -44,7 +44,7 @@ class MyHTMLParser(HTMLParser):
         global text
         if tag == 'strong' or tag == 'b' or tag.startswith('h'):
             tag = '</b>'
-        elif tag == 'em' or tag == 'i':
+        elif tag == 'em' or tag == 'i' or tag == 'blockquote':
             tag = '</i>'
         elif tag == 'ul':
             tag = ''
@@ -77,8 +77,9 @@ def getfeed(feedurl):
     for item in splittext:
         if item.strip() != '':
             text.append(item)
-    text = text[0].strip() + '\n\n<i>' + text[1] + \
-        'www.moodypublishers.com.</i>'
+    if text[1].startswith('From'):
+        text = text[0].strip() + '\n\n<i>' + text[1] + \
+            'www.moodypublishers.com.</i>'
     text = title + text
     while '\n\n\n' in text:
         text = text.replace('\n\n\n', '\n\n')
