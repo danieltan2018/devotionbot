@@ -31,7 +31,7 @@ class MyHTMLParser(HTMLParser):
             tag = '\n'
         elif tag == 'strong' or tag == 'b' or tag.startswith('h'):
             tag = '<b>'
-        elif tag == 'em' or tag == 'i':
+        elif tag == 'em' or tag == 'i' or tag == 'blockquote':
             tag = '<i>'
         elif tag == 'ul':
             tag = ''
@@ -47,7 +47,7 @@ class MyHTMLParser(HTMLParser):
         global text
         if tag == 'strong' or tag == 'b' or tag.startswith('h'):
             tag = '</b>'
-        elif tag == 'em' or tag == 'i':
+        elif tag == 'em' or tag == 'i' or tag == 'blockquote':
             tag = '</i>'
         elif tag == 'ul':
             tag = ''
@@ -132,7 +132,7 @@ def override():
 
 def main():
 
-    schedule.every().day.at("07:00").do(command)
+    schedule.every().day.at("06:00").do(command)
     print("Bot running: task scheduled.")
 
     while True:
